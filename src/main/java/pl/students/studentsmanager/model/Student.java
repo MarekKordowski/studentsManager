@@ -18,6 +18,7 @@ public class Student implements Serializable {
     private String email;
     private String phone;
     private String imageUrl;
+    private String studentCode;
 
 
 }
