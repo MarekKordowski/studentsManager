@@ -11,7 +11,11 @@ import java.util.UUID;
 @Service
 public class StudentService {
 
-    private StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
+
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
 
     public Student addStudent(Student student) {
         student.setStudentCode(UUID.randomUUID().toString());
