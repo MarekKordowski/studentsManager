@@ -1,6 +1,5 @@
 package pl.students.studentsmanager.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +9,7 @@ import pl.students.studentsmanager.service.StudentService;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/student")
 public class StudentController {
 
@@ -25,8 +25,8 @@ public class StudentController {
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
 
-    @GetMapping("find/{id}")
-    public ResponseEntity<Student> getAllStudentsById(@PathVariable Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Student> getStudentById(@PathVariable Long id) {
         Student student = studentService.findStudentById(id);
         return new ResponseEntity<>(student, HttpStatus.OK);
     }
@@ -40,13 +40,19 @@ public class StudentController {
     @PutMapping("/{id}")
     public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student student) {
         Student updatedStudent = studentService.updateStudent(id, student);
-        return new ResponseEntity<>(updatedStudent, HttpStatus.UPGRADE_REQUIRED);
+        return new ResponseEntity<>(updatedStudent, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/names")
+    public ResponseEntity<Student> getStudentByNameAndLastName(@RequestParam("name") String name, @RequestParam("lastName") String lastName) {
+        Student student = studentService.findByNameAndLastName(name, lastName);
+        return new ResponseEntity<>(student, HttpStatus.FOUND);
     }
 
 }

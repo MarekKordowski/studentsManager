@@ -39,11 +39,19 @@ public class StudentService {
     }
 
     public Student findStudentById(Long id) {
-        return studentRepository
-                .findById(id).orElseThrow(() -> new StudentNotFoundException("Student doesn't exist "));
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new StudentNotFoundException("Student by " + id + " doesn't exist "));
     }
 
     public void deleteStudent(Long id) {
         studentRepository.deleteById(id);
     }
+
+    public Student findByNameAndLastName(String name, String lastName) {
+        if (!(studentRepository.ExistByName(name)) || !(studentRepository.ExistByLastName(lastName))) {
+            throw new StudentNotFoundException("Student doesn't exist");
+        }
+        return studentRepository.findByNameAndLastName(name, lastName);
+    }
 }
+
