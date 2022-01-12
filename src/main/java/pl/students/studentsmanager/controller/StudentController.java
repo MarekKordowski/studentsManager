@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/student")
+@RequestMapping("/students")
 public class StudentController {
 
     private final StudentService studentService;
@@ -20,9 +20,10 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Student>> getAllStudents() {
-        List<Student> students = studentService.findAllStudent();
-        return new ResponseEntity<>(students, HttpStatus.OK);
+    public List<Student> getAllStudents(@RequestParam(required = false) Integer page) {
+        Integer pageNumber = page !=null && page >= 0 ? page : 0;
+        return studentService.findAllStudents(pageNumber);
+
     }
 
     @GetMapping("/{id}")
@@ -37,12 +38,13 @@ public class StudentController {
         return new ResponseEntity<>(newStudent, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student student) {
-        Student updatedStudent = studentService.updateStudent(id, student);
+    @PutMapping()
+    public ResponseEntity<Student> updateStudent(@RequestBody Student student) {
+        Student updatedStudent = studentService.updateStudent(student);
         return new ResponseEntity<>(updatedStudent, HttpStatus.OK);
     }
 
+    // ma zwracać voida - trzeba zmienić
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
