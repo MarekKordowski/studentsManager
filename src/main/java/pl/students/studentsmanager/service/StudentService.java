@@ -1,16 +1,20 @@
 package pl.students.studentsmanager.service;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.students.studentsmanager.exception.StudentNotFoundException;
 import pl.students.studentsmanager.model.Student;
 import pl.students.studentsmanager.repository.StudentRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class StudentService {
 
+    private static final int SIZE = 10;
     private final StudentRepository studentRepository;
 
     public StudentService(StudentRepository studentRepository) {
@@ -22,19 +26,23 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
-    public List<Student> findAllStudent() {
-        return studentRepository.findAll();
+    public List<Student> findAllStudents(Integer page) {
+        return studentRepository.findAllStudents(
+                PageRequest.of(page, SIZE,
+                        Sort.by(Sort.Order.asc("lastName"))
+                )
+        );
     }
 
-    public Student updateStudent(Long id, Student student) {
-
-        Student studentById = studentRepository
-                .findById(id).orElseThrow(() -> new StudentNotFoundException("Student by id " + " doesn't Exist"));
-        studentById.setName(student.getName());
-        studentById.setLastName(student.getLastName());
-        studentById.setEmail(student.getEmail());
-        studentById.setPhone(student.getPhone());
-        return studentRepository.save(studentById);
+    @Transactional
+    public Student updateStudent(Student student) {
+        Student updatedStudent = studentRepository
+                .findById(student.getId()).orElseThrow();
+        updatedStudent.setName(student.getName());
+        updatedStudent.setLastName(student.getLastName());
+        updatedStudent.setEmail(student.getEmail());
+        updatedStudent.setPhone(student.getPhone());
+        return updatedStudent;
 
     }
 
